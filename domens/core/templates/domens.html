@@ -1,0 +1,76 @@
+{% extends 'index.html' %}
+
+{% block content %}
+ <h1 class="mt-4">Домены</h1>
+    <!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+  Создать домен
+</button>
+
+
+
+    
+    
+    <!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Добавить домен</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <form id="add_form" method="post">
+      {% csrf_token %}
+      {{form}}
+      </form> 
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+        <button form="add_form" type="submit" class="btn btn-primary">Добавить</button>
+      </div>
+    </div>
+  </div>
+</div>  
+<table class="table table-bordered mt-4">
+  <thead>
+    <tr>
+      <th scope="col">id</th>
+      <th scope="col">Название</th>
+      <th scope="col">Веб сервер</th>
+      <th scope="col">Стутус</th>
+      <th scope="col">Удалить</th>
+
+    </tr>
+  </thead>
+  <tbody>
+    {% for i in concert_list %}
+    <tr {% if i.id|slugify == request.GET.id %} style="background: green" {% endif %}>
+      <th>{{i.id}}</th>
+      <td>{{i.name}}</td>
+      <td>{{i.webserver}}</td>
+      <td>{{i.status}}</td>
+      
+        <td>
+      
+      <form id="delete_form{{i.id}}" action="{% url 'delete_page' i.id %}" method="POST">{% csrf_token %}</form>
+      <a href="javascript:void()" onclick="delete_form{{i.id}}()">Удалить</a>
+      <script>
+        function delete_form{{i.id}}(){
+            if (confirm("Вы уверены?")){
+                document.getElementById('delete_form{{i.id}}').submit()
+            }
+        }
+      </script>
+   
+          
+    </td>
+    </tr>
+   {% endfor %}
+  </tbody>
+</table>    
+    
+    
+{% endblock %}
